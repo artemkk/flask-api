@@ -1,5 +1,6 @@
 import flask
 from flask import request, jsonify
+import pymysql
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
@@ -36,10 +37,6 @@ compression = [
      'age': '28',
      'strength': '40.27'}
 ]
-
-@app.route('/', methods=['GET'])
-def hello_world():
-    return "HELLO WORLD!!"
 
 @app.route('/flask-api/v1/resources/compression/all', methods=['GET'])
 def api_all():
