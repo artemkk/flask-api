@@ -1,14 +1,23 @@
 # first neural network with keras tutorial
-from numpy import loadtxt
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from keras.models import Sequential
+from keras.layers import Dense
+import matplotlib.pyplot as plt
+import numpy
+from sklearn.metrics import r2_score
+from matplotlib import pyplot
+import tensorflow as tf
+from keras.utils import plot_model
 
+# load the training and validation datasets
+TrainingSet = numpy.genfromtxt("./raw-data/model-data-sets/concrete_training_data.csv", delimiter=",", skip_header=True)
+ValidationSet = numpy.genfromtxt("./raw-data/model-data-sets/concrete_validation_data.csv", delimiter=",", skip_header=True)
 
-# load the training dataset
-dataset = loadtxt('concrete_training_data.csv', delimiter=',')
 # split into input (X) and output (y) variables
-X = dataset[:,0:8]
-y = dataset[:,8]
+X1 = TrainingSet[:,0:8]
+Y1 = TrainingSet[:,8]
+
+X2 = ValidationSet[:,0:8]
+Y2 = ValidationSet[:,8]
 
 # define the keras model
 model = Sequential()
@@ -17,17 +26,48 @@ model.add(Dense(8, activation='relu'))
 model.add(Dense(1, activation='relu'))
 
 # compile the keras model
-model.compile(loss='mean_squared_error', optimizer='adam')
+model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(learning_rate=1e-6))
 
-# fit the keras model on the dataset
-model.fit(X, y, epochs=150, batch_size=10)
+# Show model architecture
+plot_model(model, to_file='model1_plot.png', show_shapes=True, show_layer_names=True)
 
-# load the validation dataset
-dataset = loadtxt('concrete_validation_data.csv', delimiter=',')
-# split into input (X) and output (y) variables
-A = dataset[:,0:8]
-b = dataset[:,8]
+# # fit the keras model on the dataset
+# history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=250000, batch_size=100)
 
-# evaluate the keras model
-_, accuracy = model.evaluate(A, b)
-print('Accuracy: %.2f' % (accuracy*100))
+# # Calculate predictions
+# PredTestSet = model.predict(X1)
+# PredValSet = model.predict(X2)
+
+# # Save predictions
+# numpy.savetxt("trainresults1.csv", PredTestSet, delimiter=",")
+# numpy.savetxt("valresults1.csv", PredValSet, delimiter=",")
+
+# # Plot training history
+# pyplot.plot(history.history['loss'], label='train')
+# pyplot.plot(history.history['val_loss'], label='test')
+# pyplot.legend()
+# pyplot.show()
+
+# # Plot actual vs prediction for training set
+# TestResults = numpy.genfromtxt("trainresults1.csv", delimiter=",")
+# plt.plot(Y1,TestResults,'ro')
+# plt.title('Training Set Model 1')
+# plt.xlabel('Actual')
+# plt.ylabel('Predicted')
+# plt.show()
+
+# # Plot actual vs prediction for validation set
+# ValResults = numpy.genfromtxt("valresults1.csv", delimiter=",")
+# plt.plot(Y2, ValResults,'ro')
+# plt.title('Validation Set Model 1')
+# plt.xlabel('Actual')
+# plt.ylabel('Predicted')
+# plt.show()
+
+# # Compute R-Square value for training set
+# TestR2Value = r2_score(Y1, TestResults)
+# print("Training Set Model 1 R-Square=", TestR2Value)
+
+# # Compute R-Square value for validation set
+# ValR2Value = r2_score(Y2, ValResults)
+# print("Validation Set Model 1 R-Square=", ValR2Value)
