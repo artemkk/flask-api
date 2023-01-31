@@ -40,49 +40,50 @@ model.compile(loss='mean_squared_error', optimizer=Adam(lr=1e-6, decay=1e-3 / 20
 # Show model architecture
 plot_model(model, to_file='model_plot2.png', show_shapes=True, show_layer_names=True)
 
-# # Patient early stopping
-# es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=200)
+# Patient early stopping
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=200)
 
-# # Fit the model
-# history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=10000000, batch_size=100, verbose=2, callbacks=[es])
+# Fit the model
+history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=10000000, batch_size=100, verbose=2, callbacks=[es])
 
-# # Show model architecture
-# plot_model(model, to_file='model_plot2.png', show_shapes=True, show_layer_names=True)
+# Show model architecture
+plot_model(model, to_file='model_plot2.png', show_shapes=True, show_layer_names=True)
 
-# # Calculate predictions
-# PredTestSet = model.predict(X1)
-# PredValSet = model.predict(X2)
+# Calculate predictions
+PredTestSet = model.predict(X1)
+PredValSet = model.predict(X2)
 
-# # Save predictions
-# numpy.savetxt("trainresults2.csv", PredTestSet, delimiter=",")
-# numpy.savetxt("valresults2.csv", PredValSet, delimiter=",")
+# Save predictions
+numpy.savetxt("trainresults2.csv", PredTestSet, delimiter=",")
+numpy.savetxt("valresults2.csv", PredValSet, delimiter=",")
 
-# # Plot training history
-# pyplot.plot(history.history['loss'], label='train')
-# pyplot.plot(history.history['val_loss'], label='test')
-# pyplot.legend()
-# pyplot.show()
+# Plot training history
+pyplot.plot(history.history['loss'], label='train')
+pyplot.plot(history.history['val_loss'], label='test')
+pyplot.title('Training History')
+pyplot.legend()
+pyplot.show()
 
-# # Plot actual vs prediction for training set
-# TestResults = numpy.genfromtxt("trainresults2.csv", delimiter=",")
-# plt.plot(Y1,TestResults,'ro')
-# plt.title('Training Set Model 2')
-# plt.xlabel('Actual')
-# plt.ylabel('Predicted')
-# plt.show()
+# Plot actual vs prediction for training set
+TestResults = numpy.genfromtxt("trainresults2.csv", delimiter=",")
+plt.plot(Y1,TestResults,'ro')
+plt.title('Training Set Model 2')
+plt.xlabel('Actual')
+plt.ylabel('Predicted')
+plt.show()
 
-# # Plot actual vs prediction for validation set
-# ValResults = numpy.genfromtxt("valresults2.csv", delimiter=",")
-# plt.plot(Y2, ValResults,'ro')
-# plt.title('Validation Set Model 2')
-# plt.xlabel('Actual')
-# plt.ylabel('Predicted')
-# plt.show()
+# Plot actual vs prediction for validation set
+ValResults = numpy.genfromtxt("valresults2.csv", delimiter=",")
+plt.plot(Y2, ValResults,'ro')
+plt.title('Validation Set Model 2')
+plt.xlabel('Actual')
+plt.ylabel('Predicted')
+plt.show()
 
-# # Compute R-Square value for training set
-# TestR2Value = r2_score(Y1,TestResults)
-# print("Training Set Model 2 R-Square=", TestR2Value)
+# Compute R-Square value for training set
+TestR2Value = r2_score(Y1,TestResults)
+print("Training Set Model 2 R-Square=", TestR2Value)
 
-# # Compute R-Square value for validation set
-# ValR2Value = r2_score(Y2, ValResults)
-# print("Validation Set Model 2 R-Square=", ValR2Value)
+# Compute R-Square value for validation set
+ValR2Value = r2_score(Y2, ValResults)
+print("Validation Set Model 2 R-Square=", ValR2Value)

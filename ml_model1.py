@@ -31,43 +31,44 @@ model.compile(loss='mean_squared_error', optimizer=tf.keras.optimizers.Adam(lear
 # Show model architecture
 plot_model(model, to_file='model1_plot.png', show_shapes=True, show_layer_names=True)
 
-# # fit the keras model on the dataset
-# history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=250000, batch_size=100)
+# fit the keras model on the dataset
+history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=250000, batch_size=100)
 
-# # Calculate predictions
-# PredTestSet = model.predict(X1)
-# PredValSet = model.predict(X2)
+# Calculate predictions
+PredTestSet = model.predict(X1)
+PredValSet = model.predict(X2)
 
-# # Save predictions
-# numpy.savetxt("trainresults1.csv", PredTestSet, delimiter=",")
-# numpy.savetxt("valresults1.csv", PredValSet, delimiter=",")
+# Save predictions
+numpy.savetxt("trainresults1.csv", PredTestSet, delimiter=",")
+numpy.savetxt("valresults1.csv", PredValSet, delimiter=",")
 
-# # Plot training history
-# pyplot.plot(history.history['loss'], label='train')
-# pyplot.plot(history.history['val_loss'], label='test')
-# pyplot.legend()
-# pyplot.show()
+# Plot training history
+pyplot.plot(history.history['loss'], label='train')
+pyplot.plot(history.history['val_loss'], label='test')
+pyplot.title('Training History')
+pyplot.legend()
+pyplot.show()
 
-# # Plot actual vs prediction for training set
-# TestResults = numpy.genfromtxt("trainresults1.csv", delimiter=",")
-# plt.plot(Y1,TestResults,'ro')
-# plt.title('Training Set Model 1')
-# plt.xlabel('Actual')
-# plt.ylabel('Predicted')
-# plt.show()
+# Plot actual vs prediction for training set
+TestResults = numpy.genfromtxt("trainresults1.csv", delimiter=",")
+plt.plot(Y1,TestResults,'ro')
+plt.title('Training Set Model 1')
+plt.xlabel('Actual')
+plt.ylabel('Predicted')
+plt.show()
 
-# # Plot actual vs prediction for validation set
-# ValResults = numpy.genfromtxt("valresults1.csv", delimiter=",")
-# plt.plot(Y2, ValResults,'ro')
-# plt.title('Validation Set Model 1')
-# plt.xlabel('Actual')
-# plt.ylabel('Predicted')
-# plt.show()
+# Plot actual vs prediction for validation set
+ValResults = numpy.genfromtxt("valresults1.csv", delimiter=",")
+plt.plot(Y2, ValResults,'ro')
+plt.title('Validation Set Model 1')
+plt.xlabel('Actual')
+plt.ylabel('Predicted')
+plt.show()
 
-# # Compute R-Square value for training set
-# TestR2Value = r2_score(Y1, TestResults)
-# print("Training Set Model 1 R-Square=", TestR2Value)
+# Compute R-Square value for training set
+TestR2Value = r2_score(Y1, TestResults)
+print("Training Set Model 1 R-Square=", TestR2Value)
 
-# # Compute R-Square value for validation set
-# ValR2Value = r2_score(Y2, ValResults)
-# print("Validation Set Model 1 R-Square=", ValR2Value)
+# Compute R-Square value for validation set
+ValR2Value = r2_score(Y2, ValResults)
+print("Validation Set Model 1 R-Square=", ValR2Value)
