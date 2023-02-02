@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
 from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import numpy
 from keras.optimizers import Adam
@@ -13,6 +14,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder 
 from keras.utils.vis_utils import plot_model
 
+# region Pull Data
 # Read data from csv file for training and validation data
 TrainingSet = numpy.genfromtxt("./raw-data/model-data-sets/concrete_training_data.csv", delimiter=",", skip_header=True)
 ValidationSet = numpy.genfromtxt("./raw-data/model-data-sets/concrete_validation_data.csv", delimiter=",", skip_header=True)
@@ -23,6 +25,7 @@ Y1 = TrainingSet[:,8]
 
 X2 = ValidationSet[:,0:8]
 Y2 = ValidationSet[:,8]
+# endregion
 
 # Create model
 model = Sequential()
@@ -37,18 +40,13 @@ model.add(Dense(1, activation="linear"))
 # Compile model: The model is initialized with the Adam optimizer and then it is compiled.
 model.compile(loss='mean_squared_error', optimizer=Adam(lr=1e-6, decay=1e-3 / 200))
 
-# Show model architecture
-plot_model(model, to_file='model_plot2.png', show_shapes=True, show_layer_names=True)
-
 # Patient early stopping
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=200)
 
 # Fit the model
 history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=10000000, batch_size=100, verbose=2, callbacks=[es])
 
-# Show model architecture
-plot_model(model, to_file='model_plot2.png', show_shapes=True, show_layer_names=True)
-
+# region Display
 # Calculate predictions
 PredTestSet = model.predict(X1)
 PredValSet = model.predict(X2)
@@ -56,6 +54,9 @@ PredValSet = model.predict(X2)
 # Save predictions
 numpy.savetxt("trainresults2.csv", PredTestSet, delimiter=",")
 numpy.savetxt("valresults2.csv", PredValSet, delimiter=",")
+
+# Show model architecture
+plot_model(model, to_file='model_plot2.png', show_shapes=True, show_layer_names=True)
 
 # Plot training history
 pyplot.plot(history.history['loss'], label='train')
@@ -87,3 +88,8 @@ print("Training Set Model 2 R-Square=", TestR2Value)
 # Compute R-Square value for validation set
 ValR2Value = r2_score(Y2, ValResults)
 print("Validation Set Model 2 R-Square=", ValR2Value)
+
+# Compute MSE for validation set
+ValMSEValue = mean_squared_error(Y2, ValResults)
+print("Validation Set Model 2 MSE=", ValMSEValue)
+# endregion
