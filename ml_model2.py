@@ -40,7 +40,7 @@ def define_model():
     model.add(Dense(1, activation="linear"))
 
     # Compile model: The model is initialized with the Adam optimizer and then it is compiled.
-    model.compile(loss='mean_squared_error', optimizer=Adam(lr=1e-6, decay=1e-3 / 200))
+    model.compile(loss='mean_squared_error', optimizer=Adam(learning_rate=1e-6, decay=1e-3 / 20))
 
     return model
 
