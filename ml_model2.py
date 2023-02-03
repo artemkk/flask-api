@@ -13,6 +13,7 @@ from keras.callbacks import EarlyStopping
 import pandas as pd 
 from sklearn.preprocessing import LabelEncoder 
 from keras.utils.vis_utils import plot_model
+from keras.wrappers.scikit_learn import KerasClassifier
 
 # region Pull Data
 # Read data from csv file for training and validation data
@@ -27,23 +28,28 @@ X2 = ValidationSet[:,0:8]
 Y2 = ValidationSet[:,8]
 # endregion
 
-# Create model
-model = Sequential()
-model.add(Dense(128, activation="relu", input_dim=8))
-model.add(Dense(32, activation="relu"))
-model.add(Dense(8, activation="relu"))
+def define_model():
 
-# Since the regression is performed, a Dense layer containing a single neuron with a linear activation function.
-# Typically ReLu-based activation are used but since it is performed regression, it is needed a linear activation.
-model.add(Dense(1, activation="linear"))
+    # Create model
+    model = Sequential()
+    model.add(Dense(128, activation="relu", input_dim=8))
+    model.add(Dense(32, activation="relu"))
+    model.add(Dense(8, activation="relu"))
 
-# Compile model: The model is initialized with the Adam optimizer and then it is compiled.
-model.compile(loss='mean_squared_error', optimizer=Adam(lr=1e-6, decay=1e-3 / 200))
+    # Since the regression is performed, a Dense layer containing a single neuron with a linear activation function.
+    # Typically ReLu-based activation are used but since it is performed regression, it is needed a linear activation.
+    model.add(Dense(1, activation="linear"))
+
+    # Compile model: The model is initialized with the Adam optimizer and then it is compiled.
+    model.compile(loss='mean_squared_error', optimizer=Adam(lr=1e-6, decay=1e-3 / 200))
+
+    return model
 
 # Patient early stopping
 es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=200)
 
 # Fit the model
+model = define_model()
 history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=10000000, batch_size=100, verbose=2, callbacks=[es])
 
 # region Display
