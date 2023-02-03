@@ -1,19 +1,16 @@
 # imports
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
+from keras.layers import Dense, Dropout
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 import numpy
 from keras.optimizers import Adam
-import keras
 from matplotlib import pyplot
 from keras.callbacks import EarlyStopping
-import pandas as pd 
-from sklearn.preprocessing import LabelEncoder 
 from keras.utils.vis_utils import plot_model
 from keras.wrappers.scikit_learn import KerasClassifier
+from keras import regularizers
 
 # region Pull Data
 # Read data from csv file for training and validation data
@@ -30,11 +27,13 @@ Y2 = ValidationSet[:,8]
 
 def define_model():
 
+    l2_dim = 0.001 
+
     # Create model
     model = Sequential()
-    model.add(Dense(128, activation="relu", input_dim=8))
-    model.add(Dense(32, activation="relu"))
-    model.add(Dense(8, activation="relu"))
+    model.add(Dense(128, activation="relu", input_dim=8, kernel_regularizer=regularizers.l2(l2_dim)))
+    model.add(Dense(32, activation="relu", kernel_regularizer=regularizers.l2(l2_dim)))
+    model.add(Dense(8, activation="relu", kernel_regularizer=regularizers.l2(l2_dim)))
 
     # Since the regression is performed, a Dense layer containing a single neuron with a linear activation function.
     # Typically ReLu-based activation are used but since it is performed regression, it is needed a linear activation.
