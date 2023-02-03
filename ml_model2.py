@@ -45,11 +45,11 @@ def define_model():
     return model
 
 # Patient early stopping
-es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=200)
+es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=130)
 
 # Fit the model
 model = define_model()
-history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=10000000, batch_size=100, verbose=2, callbacks=[es])
+history = model.fit(X1, Y1, validation_data=(X2, Y2), epochs=10000000, batch_size=125, verbose=2, callbacks=[es])
 
 # region Display
 # Calculate predictions
