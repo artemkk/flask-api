@@ -1,30 +1,29 @@
 import flask
 from flask import request, jsonify
-import pymysql
+import psycopg2
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-
-def dict_factory(cursor, row):
-    d = {}
-
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
-
 @app.route('/flask-api/v1/resources/compression/all', methods=['GET'])
 def api_all():
-    
-    conn = pymysql.connect(host="artemkk.mysql.database.azure.com", port=3306, database="concrete", user="azureuser", passwd="Ensiferum1994!", ssl={"fake_flag_to_enable_tls":True})
-    conn.row_factory = dict_factory
 
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM compressive_strength;')
+    #establishing the connection
+    conn = psycopg2.connect(database="flask-api", user='postgres', password='O55yrocks1970!', host='127.0.0.1', port= '5432'
+    )
 
-    all_cretes = cur.fetchall()
+    #Setting auto commit false
+    conn.autocommit = True
 
-    return jsonify(all_cretes)
+    #Creating a cursor object using the cursor() method
+    cursor = conn.cursor()
+
+    #Retrieving data
+    cursor.execute('''SELECT * FROM Public."Concrete_Strength"''')
+
+    #Fetching 1st row from the table
+    result = cursor.fetchall();
+
+    return jsonify(result)
 
 app.run()
